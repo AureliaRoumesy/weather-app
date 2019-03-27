@@ -9,7 +9,7 @@ class DisplayWeatherCard extends Component {
 
   render() {
     return (
-      <div className='card m-3' style={{ width: '18rem', padding:'30px 30px 0px 30px' }}>
+      <div className='card m-3' style={{ width: '18rem'}}>
         <img src={this.props.icon} className="card-img-top" alt={this.props.IconPhrase} />
         <div className="card-body">
           <h3>Le {TransformDate(this.props.date)}</h3>

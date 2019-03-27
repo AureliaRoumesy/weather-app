@@ -1,18 +1,43 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
 class SearchButton extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      searchCity: ''
+    };
+  }
+  submitHandler = (evt) => {
+    evt.preventDefault();
+    // pass the input field value to the event handler passed
+    // as a prop by the parent (App)
+    this.props.searchFN(this.state.searchCity);
+
+    this.setState({
+      searchCity: ''
+    });
+  }
+
+  handleChange = (event) => {
+    this.setState({
+      searchCity: event.target.value
+    });
   }
 
   render() {
     return (
-      <div class="input-group mb-3">
-        <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
-          <button class="btn btn-outline-secondary" type="button">Button</button>
+      <div className="input-group mb-3 ml-5" style={{ width: '18rem' }}>
+        <form onSubmit={this.submitHandler} className="d-flex">
+          <input type="text"
+            id="searchCity"
+            placeholder="Ville"
+            value={this.state.searchCity}
+            onChange={this.handleChange} />
+          <input type="submit" />
+        </form>
       </div>
     );
-  };
+  }
 }
 
-export default SearchButton
+export default SearchButton;

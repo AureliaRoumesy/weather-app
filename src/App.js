@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import './App.css';
 
 import DisplayWeatherCard from "./DisplayWeatherCard";
+import SearchButton from './SearchButton';
 
-const APIkey = '4DlN2YIPhbTzSeQteWoqP17GEQNtHJMQ';
+const APIkey = 'jFYHw2NPBh4YVdw9HVY0253sBYxkAWPq';
 
 class App extends Component {
   constructor(props) {
@@ -11,8 +12,9 @@ class App extends Component {
     this.state = {
       latitude: null,
       longitude: null,
+      key: '',
       weathers: undefined,
-      city: undefined
+      city: undefined,
     };
   };
 
@@ -39,29 +41,46 @@ class App extends Component {
           city: data.LocalizedName
         });
         fetch(`https://dataservice.accuweather.com/forecasts/v1/daily/5day/${data.Key}?apikey=${APIkey}&language=fr-FR&details=true&metric=true`)
-        .then(response => response.json())
-        .then(data => {
-          
-          // Une fois les données récupérées, on va mettre à jour notre state avec les nouvelles données
-          this.setState({
-            weathers: data.DailyForecasts
-          });
-          
-        })
+          .then(response => response.json())
+          .then(data => {
+
+            // Une fois les données récupérées, on va mettre à jour notre state avec les nouvelles données
+            this.setState({
+              weathers: data.DailyForecasts
+            });
+          })
       })
   }
 
+  handleData = (searchCity) => {
+    this.setState({
+      city: searchCity
+    });
+    fetch(`https://dataservice.accuweather.com/locations/v1/cities/search?apikey=${APIkey}&q=${searchCity}&language=fr-FR&details=false&offset=3`)
+      .then(response => response.json())
+      .then(data => {
+        fetch(`https://dataservice.accuweather.com/forecasts/v1/daily/5day/${data[0].Key}?apikey=${APIkey}&language=fr-FR&details=true&metric=true`)
+          .then(response => response.json())
+          .then(data => {
+            this.setState({
+              weathers: data.DailyForecasts
+            });
+          })
+      })
+  }
+
+
+
   render() {
-    console.log(this.state.weathers)
     return (
-      
       <div className="App">
-        <header>
+        <header className="mt-5 mb-3">
           <h1>Météo à {this.state.city}</h1>
         </header>
+        <SearchButton searchFN={this.handleData} />
         <div className="row justify-content-center">
           {this.state.weathers ? this.state.weathers.map(weather => (
-            <DisplayWeatherCard 
+            <DisplayWeatherCard
               icon={`https://vortex.accuweather.com/adc2010/images/slate/icons/${weather.Day.Icon}.svg`}
               date={weather.Date}
               IconPhrase={weather.Day.IconPhrase}
@@ -72,7 +91,7 @@ class App extends Component {
               Wind={weather.Day.Wind.Speed.Value}
               WindGust={weather.Day.WindGust.Speed.Value}
               Liquid={weather.Day.TotalLiquid.Value}
-              />
+            />
           )) : ''}
         </div>
       </div>
