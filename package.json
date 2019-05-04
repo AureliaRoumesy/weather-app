@@ -1,4 +1,5 @@
 {
+  "homepage" : "https://aureliaroumesy.fr/apps/weather-app",
   "name": "meteo-app",
   "version": "0.1.0",
   "private": true,
